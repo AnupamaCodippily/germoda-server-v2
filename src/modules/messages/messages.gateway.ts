@@ -7,6 +7,7 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Cache } from 'cache-manager';
+import { MEETINGS_DEFAULT_DURATION_MILLISECONDS } from 'src/constants/meeting-gateway';
 import { FRONTEND_ENDPOINT } from 'src/constants/urls';
 import IMeetingParticipant from 'src/interfaces/meeting-participant.interface';
 import { IMeeting } from 'src/interfaces/meeting.interface';
@@ -55,7 +56,11 @@ export class MessagesGateway
       meetingSettings?.messagesHistory?.push();
       console.log(meetingSettings);
 
-      this.cacheManager.set(meetingName, meetingSettings);
+      this.cacheManager.set(
+        meetingName,
+        meetingSettings,
+        MEETINGS_DEFAULT_DURATION_MILLISECONDS,
+      );
       this.server.emit('server-send-messages-to-clients', message);
     }
   }
@@ -74,12 +79,13 @@ export class MessagesGateway
 
     console.log('The host joined the meeting ' + meetingId);
 
-    const meetingSettings: any = await this.cacheManager.get(meetingId);
+    const meetingSettings: IMeeting = await this.cacheManager.get(meetingId);
 
     if (meetingSettings) {
       // the client will receive the existing message history
-      client.emit('server-ack-client-joining', {
+      client.emit('server-ack-host-joining', {
         messageHistory: meetingSettings?.messagesHistory,
+        participants: meetingSettings.participants,
       });
     }
   }
@@ -92,20 +98,27 @@ export class MessagesGateway
 
     console.log('Host started meeting: ' + meetingId);
 
-    const meetingSettings = await this.cacheManager.get(meetingId);
+    const meetingSettings: IMeeting = await this.cacheManager.get(meetingId);
 
     if (!meetingSettings) {
       console.log('Meeting initialized');
+
+      const meeting: IMeeting = {
+        meetingId,
+        meetingTitle: title,
+        startTime: Date.now().toString(),
+        participants: {},
+        messagesHistory: [],
+        hostCamOn: false,
+        host: {
+          peerId: hostPeerId,
+        },
+      };
+
       await this.cacheManager.set(
         meetingId,
-        {
-          meetingId,
-          title,
-          hostPeerId,
-          participants: {},
-          messagesHistory: [],
-        },
-        3600000,
+        meeting,
+        MEETINGS_DEFAULT_DURATION_MILLISECONDS,
       );
     }
   }
@@ -157,7 +170,6 @@ export class MessagesGateway
   @SubscribeMessage('student-joined-meeting')
   async onStudentJoinMeeting(client, message) {
     const { studentPeerId, meetingId, name, participantSettings } = message;
-    console.log('A new student joined the meeting ' + meetingId);
     const meetingSettings: IMeeting = await this.cacheManager.get(meetingId);
     if (meetingSettings) {
       let participant: IMeetingParticipant = null;
@@ -175,9 +187,8 @@ export class MessagesGateway
 
       meetingSettings.participants[name] = participant;
 
-      console.log(meetingSettings);
-
       client.emit('server-sent-client-participants-list', {
+        hostPeerId: meetingSettings.host.peerId,
         participants: meetingSettings.participants,
       });
 
@@ -186,7 +197,13 @@ export class MessagesGateway
         participant,
       });
 
-      this.cacheManager.set(meetingId, meetingSettings);
+      await this.cacheManager.set(
+        meetingId,
+        meetingSettings,
+        MEETINGS_DEFAULT_DURATION_MILLISECONDS,
+      );
+
+      console.log('A new student joined the meeting ' + meetingId);
     } else {
       console.log('Meeting not found');
     }

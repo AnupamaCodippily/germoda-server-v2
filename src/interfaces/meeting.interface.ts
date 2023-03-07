@@ -5,8 +5,13 @@ export interface IMeeting {
   meetingId: string;
   meetingTitle: string;
   startTime: Date | string;
-  endTime: Date | string;
-  participants: Set<IMeetingParticipant>;
+  endTime?: Date | string;
+  participants: {
+    [idx: string]: IMeetingParticipant;
+  };
+  host: {
+    peerId: string;
+  };
   messagesHistory: IChatMessage[];
   hostCamOn: boolean;
 }
