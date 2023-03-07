@@ -7,7 +7,6 @@ import CreateStudentRequestDTO from './dto/create-student-req.dto';
 const bcrypt = require('bcrypt');
 import { UpdateStuduntClassDto } from './dto/update-student.dto';
 
-
 @Injectable()
 export class StudentService {
   constructor(
@@ -16,7 +15,7 @@ export class StudentService {
   ) {}
 
   async createStudent(requestDto: CreateStudentRequestDTO) {
-    const { password } = requestDto;
+    const { password } = requestDto.student;
 
     try {
       const encryptedPassword = await bcrypt.hash(password, 10);
@@ -45,19 +44,21 @@ export class StudentService {
     return await this.studentModel.find();
   }
 
-  async findAll(){
+  async findAll() {
     return await this.studentModel.find();
   }
 
-  async update(studentId:string, updateStuduntClassDto:UpdateStuduntClassDto ){
+  async update(
+    studentId: string,
+    updateStuduntClassDto: UpdateStuduntClassDto,
+  ) {
     return await this.studentModel.findByIdAndUpdate(
       studentId,
-      updateStuduntClassDto,
+      updateStuduntClassDto.student,
     );
   }
 
-  async remove(studentId:string){
+  async remove(studentId: string) {
     return await this.studentModel.findByIdAndRemove(studentId);
   }
- 
 }

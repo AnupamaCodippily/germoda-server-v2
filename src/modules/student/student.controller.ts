@@ -1,9 +1,10 @@
-
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
+  Patch,
   Post,
   Request,
   UnauthorizedException,
@@ -14,12 +15,10 @@ import {
   ADMIN_AUTH_JWT,
   STUDENT_AUTH_JWT,
 } from 'src/constants/auth-strategy-names';
-import { ADMIN_AUTH_LOCAL, STUDENT_AUTH_LOCAL } from 'src/constants/auth-strategy-names';
 import CreateStudentRequestDTO from './dto/create-student-req.dto';
 import { UpdateStuduntClassDto } from './dto/update-student.dto';
 import { StudentService } from './student.service';
 
-@UseGuards(AuthGuard(STUDENT_AUTH_LOCAL))
 @Controller('/api/student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
@@ -35,7 +34,6 @@ export class StudentController {
   async getStudentById(@Param('id') studentId: string) {
     return this.studentService.getStudentById(studentId);
   }
-
 
   @UseGuards(AuthGuard(STUDENT_AUTH_JWT))
   @Get('/own/:id')
@@ -53,12 +51,12 @@ export class StudentController {
   @Get()
   async getAllStudents() {
     return this.studentService.getAllStudents();
-}
+  }
   @Get('/:username')
-  async getStudentByUsername(@Param('username')username:string){
+  async getStudentByUsername(@Param('username') username: string) {
     return this.studentService.getStudentByUsername(username);
   }
-  
+
   @Get()
   findAll() {
     return this.studentService.findAll();
@@ -66,14 +64,14 @@ export class StudentController {
 
   @Patch(':id')
   update(
-    @Param('id') id:string,
-    @Body() updateStuduntClassDto : UpdateStuduntClassDto,
-  ){
-    return this.studentService.update(id,updateStuduntClassDto);
+    @Param('id') id: string,
+    @Body() updateStuduntClassDto: UpdateStuduntClassDto,
+  ) {
+    return this.studentService.update(id, updateStuduntClassDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id :string){
+  remove(@Param('id') id: string) {
     return this.studentService.remove(id);
   }
 }
