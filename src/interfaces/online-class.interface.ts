@@ -1,4 +1,4 @@
-export default interface IOnlineClass {
+export default interface  IOnlineClass {
   date: any;
 
   time: any;

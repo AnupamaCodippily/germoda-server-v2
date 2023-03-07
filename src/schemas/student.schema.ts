@@ -6,6 +6,9 @@ export type StudentDocument = HydratedDocument<Student>;
 @Schema({ collection: 'germoda-students' })
 export class Student {
   @Prop({ required: true })
+  studentId: string;
+
+  @Prop({ required: true })
   studentName: string;
 
   @Prop()
@@ -28,6 +31,12 @@ export class Student {
 
   @Prop()
   password: string;
+
+  @Prop()
+  country: string;
+
+  @Prop()
+  state: string;
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);

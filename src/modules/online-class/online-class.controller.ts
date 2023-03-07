@@ -16,8 +16,9 @@ import {
   ADMIN_AUTH_JWT,
   STUDENT_AUTH_JWT,
 } from 'src/constants/auth-strategy-names';
+import { ADMIN_AUTH_JWT, STUDENT_AUTH_LOCAL } from 'src/constants/auth-strategy-names';
 
-// @UseGuards(AuthGuard(ADMIN_AUTH_JWT))
+@UseGuards(AuthGuard(ADMIN_AUTH_JWT))
 @Controller('api/online-class')
 export class OnlineClassController {
   constructor(private readonly onlineClassService: OnlineClassService) {}
@@ -35,6 +36,7 @@ export class OnlineClassController {
   findAll() {
     return this.onlineClassService.findAll();
   }
+
 
   @UseGuards(AuthGuard(ADMIN_AUTH_JWT))
   @Get(':id')

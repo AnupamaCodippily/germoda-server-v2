@@ -5,6 +5,9 @@ import { Student, StudentDocument } from 'src/schemas/student.schema';
 import CreateStudentRequestDTO from './dto/create-student-req.dto';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
+import { UpdateStuduntClassDto } from './dto/update-student.dto';
+
+
 @Injectable()
 export class StudentService {
   constructor(
@@ -41,4 +44,20 @@ export class StudentService {
   async getAllStudents() {
     return await this.studentModel.find();
   }
+
+  async findAll(){
+    return await this.studentModel.find();
+  }
+
+  async update(studentId:string, updateStuduntClassDto:UpdateStuduntClassDto ){
+    return await this.studentModel.findByIdAndUpdate(
+      studentId,
+      updateStuduntClassDto,
+    );
+  }
+
+  async remove(studentId:string){
+    return await this.studentModel.findByIdAndRemove(studentId);
+  }
+ 
 }

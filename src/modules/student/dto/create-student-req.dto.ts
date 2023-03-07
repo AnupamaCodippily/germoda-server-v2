@@ -1,3 +1,5 @@
-import { Student } from 'src/schemas/student.schema';
+import IStudent from "src/interfaces/student.interface";
 
-export default class CreateStudentRequestDTO extends Student {}
+export default class CreateStudentRequestDto {
+   studnt:IStudent; 
+}

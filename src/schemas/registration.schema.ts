@@ -1,21 +1,25 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Date, HydratedDocument } from 'mongoose';
+import { MongooseModule, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Collection, Date, HydratedDocument } from 'mongoose';
 
 export type RegistrationDocument = HydratedDocument<Registration>;
 
-@Schema()
+@Schema({ collection: 'germoda-registration' })
 class Registration {
-  @Prop()
+  @Prop({ require: true })
   studentId: string;
 
-  @Prop()
+  @Prop({ require: true })
   amount: number;
 
-  @Prop()
+  @Prop({ require: true })
   balance: number;
 
-  @Prop()
+  @Prop({ require: true })
   paymentDateTime: Date;
 }
 
 export const RegistrationSchema = SchemaFactory.createForClass(Registration);
+
+export const RegistrationMongooseModule = MongooseModule.forFeature([
+  { name: Registration.name, schema: RegistrationSchema }
+])

@@ -8,7 +8,8 @@ import { UpdatePaymentDto } from './dto/update-payment.dto';
 @Injectable()
 export class PaymentService {
   constructor(
-    @InjectModel(Payment.name) private paymentModel: Model<PaymentDocument>,
+    @InjectModel(Payment.name) 
+    private paymentModel: Model<PaymentDocument>,
   ) {}
 
   async create(createPaymentDto: CreatePaymentDto) {

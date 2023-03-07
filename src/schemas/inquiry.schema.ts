@@ -8,7 +8,7 @@ class Inquiry {
   @Prop({ required: true })
   studentId: string;
 
-  @Prop()
+  @Prop({ required:true})
   description: string;
 
   @Prop({ required: true })

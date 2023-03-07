@@ -1,1 +1,5 @@
-export class CreateInquiryDto {}
+import IInquiry from "src/interfaces/inquiry.interface";
+
+export class CreateInquiryDto {
+    inquiry:IInquiry
+}

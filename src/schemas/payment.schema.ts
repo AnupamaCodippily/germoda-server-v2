@@ -6,13 +6,13 @@ export type PaymentDocument = HydratedDocument<Payment>;
 
 @Schema({ collection: 'germoda-payments' })
 export class Payment implements IPayment {
-  @Prop()
+  @Prop({ require: true })
   studentId: string;
 
-  @Prop()
+  @Prop({ require: true })
   amount: number;
 
-  @Prop()
+  @Prop({ require: true })
   balance: number;
 
   @Prop({ type: Date })
