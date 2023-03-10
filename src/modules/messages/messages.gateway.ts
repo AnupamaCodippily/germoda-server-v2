@@ -115,6 +115,17 @@ export class MessagesGateway
         },
       };
 
+      meeting.participants['host'] = {
+        meetingId,
+        peerId: hostPeerId,
+        name: 'host',
+        settings: {
+          allowedVideo: true,
+          mic: false,
+          video: false,
+        },
+      };
+
       await this.cacheManager.set(
         meetingId,
         meeting,
