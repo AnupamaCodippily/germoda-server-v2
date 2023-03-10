@@ -17,7 +17,6 @@ import {
   STUDENT_AUTH_JWT,
 } from 'src/constants/auth-strategy-names';
 
-@UseGuards(AuthGuard(ADMIN_AUTH_JWT))
 @Controller('api/online-class')
 export class OnlineClassController {
   constructor(private readonly onlineClassService: OnlineClassService) {}
@@ -58,6 +57,7 @@ export class OnlineClassController {
     return this.onlineClassService.update(id, updateOnlineClassDto);
   }
 
+  @UseGuards(AuthGuard(ADMIN_AUTH_JWT))
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.onlineClassService.remove(id);
